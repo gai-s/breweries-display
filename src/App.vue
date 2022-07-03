@@ -124,7 +124,7 @@ export default {
           }
           //In case of the brewery's state is updated
           else{
-              delete(this.mainObj.states[item.state].breweries[item.id])
+              delete(this.mainObj.states[this.curItemState].breweries[item.id])
               this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
               this.addItem(item)
           }

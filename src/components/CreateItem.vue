@@ -99,6 +99,7 @@
                     name: this.capitalizeEachWord(this.name)
                 }
                 if(this.editMode){
+                    console.log("new item is: ", newItem )
                     this.$emit('edit-item',newItem)
                 }
                 else{
