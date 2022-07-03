@@ -87,7 +87,7 @@ export default {
       if(confirm('Are you sure?')){
         //let index = this.items.findIndex(cur => cur.stateName===state_name)
         let cur_state = this.items[i]
-        delete(this.mainObj.states[cur_state.stateName].breweries[id])
+        delete(this.mainObj.states[cur_state.state].breweries[id])
         this.items[i].breweries.splice(j,1)
         //let cur_state=this.items[index].breweries.filter((cur)=>cur.id==id)
       }
