@@ -115,6 +115,7 @@ export default {
     UpdateItem(item){
           if(item.state.toUpperCase()==this.curItemState.toUpperCase()){
             let brewery_location=this.items[this.stateIndex].breweries[this.breweryIndex].details
+            let old_street = brewery_location.street
             brewery_location.street=item.street
             //In case the city or name had changed the item might change his location in sorted breweries array
             if(brewery_location.city!=item.city || brewery_location.name!=item.name){
@@ -122,7 +123,7 @@ export default {
               //check for duplication of changed item, if so no change accure
               if(new_locate_brewery.res){
                   alert(`A Brewery named ${item.name} already exist in ${item.city}, ${item.state}, No saving accure`)
-                  brewery_location.street=this.curEditItem.street
+                  brewery_location.street=old_street
 
               }
               //No duplication, item will be update and place in the right sorted position
@@ -131,7 +132,7 @@ export default {
                 brewery_location.name=item.name
                 this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
                 //position fix after erasing 
-                let new_position = this.breweryIndex<new_locate_brewery.pos ? (new_locate_brewery.pos-1) : new_locate_brewery.pos
+                let new_position = this.Index<new_locate_brewery.pos ? (new_locate_brewery.pos-1) : new_locate_brewery.pos
                 this.items[this.stateIndex].breweries.splice(new_position,0,{id: item.id, details: brewery_location})
               }
             }
@@ -144,7 +145,7 @@ export default {
               if(this.addItem(item)){
                 delete(this.mainObj.states[this.curItemState].breweries[item.id])
                 //position fix after insertion (in case a new state has inserted)
-                this.stateIndex = this.items[this.stateIndex].name==this.curItemState ? this.stateIndex: this.stateIndex+1
+                this.stateIndex = this.items[this.stateIndex].state==this.curItemState ? this.stateIndex: this.stateIndex+1
                 this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
                 this.editMode=false
                 this.curEditItem=null
