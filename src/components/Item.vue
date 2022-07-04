@@ -5,7 +5,7 @@
             <i class="fas fa-times" @click="$emit('delete-item', item.id, state_key, brewery_key)"></i>
             <i class="fas fa-edit" @click="$emit('start-edit-item', item, state_key, brewery_key)"></i>
         </h3>
-        <p>{{((item.details.street!=='null')&&(item.details.street!=="")) ? (item.details.street + ', ') : ''}} {{item.details.city}}, {{state_name}}</p>
+        <p>{{((item.details.street!=='null')&&(item.details.street!=="")&&(item.details.street!=undefined)) ? (item.details.street + ', ') : ''}} {{item.details.city}}, {{state_name}}</p>
     </div>
 </template>
 

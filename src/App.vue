@@ -63,6 +63,7 @@ export default {
         //In case this brewery name already exist in this city, the item will not be added
         if (locate_brewery.res){
           alert(`A Brewery named ${item.name} already exist in ${item.city}, ${item.state}, No save accure`)
+          return 0
           }
         //In case the brewery's state already exist, the item will be added to the right state array
         else{
@@ -81,6 +82,7 @@ export default {
       }
       console.log("mainObj arr is: ", this.mainObj)
       console.log("items arr is: ", this.items)
+      return 1
     },
     
     deleteItem(id, i, j){
@@ -114,22 +116,41 @@ export default {
           if(item.state.toUpperCase()==this.curItemState.toUpperCase()){
             let brewery_location=this.items[this.stateIndex].breweries[this.breweryIndex].details
             brewery_location.street=item.street
+            //In case the city or name had changed the item might change his location in sorted breweries array
             if(brewery_location.city!=item.city || brewery_location.name!=item.name){
-              brewery_location.city=item.city
-              brewery_location.name=item.name
-              this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
-              let new_locate_brewery = this.binarySearch(this.items[this.stateIndex].breweries, 0, this.items[this.stateIndex].breweries.length-1, {id: item.id, details: brewery_location}, this.breweriesCompare)
-              this.items[this.stateIndex].breweries.splice(new_locate_brewery.pos,0,{id: item.id, details: brewery_location})
+              let new_locate_brewery = this.binarySearch(this.items[this.stateIndex].breweries, 0, this.items[this.stateIndex].breweries.length-1, {id: item.id, details: item}, this.breweriesCompare)
+              //check for duplication of changed item, if so no change accure
+              if(new_locate_brewery.res){
+                  alert(`A Brewery named ${item.name} already exist in ${item.city}, ${item.state}, No saving accure`)
+                  brewery_location.street=this.curEditItem.street
+
+              }
+              //No duplication, item will be update and place in the right sorted position
+              else{
+                brewery_location.city=item.city
+                brewery_location.name=item.name
+                this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
+                //position fix after erasing 
+                let new_position = this.breweryIndex<new_locate_brewery.pos ? (new_locate_brewery.pos-1) : new_locate_brewery.pos
+                this.items[this.stateIndex].breweries.splice(new_position,0,{id: item.id, details: brewery_location})
+              }
             }
+            this.editMode=false
+            this.curEditItem=null
+
           }
           //In case of the brewery's state is updated
           else{
-              delete(this.mainObj.states[this.curItemState].breweries[item.id])
-              this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
-              this.addItem(item)
+              if(this.addItem(item)){
+                delete(this.mainObj.states[this.curItemState].breweries[item.id])
+                //position fix after insertion (in case a new state has inserted)
+                this.stateIndex = this.items[this.stateIndex].name==this.curItemState ? this.stateIndex: this.stateIndex+1
+                this.items[this.stateIndex].breweries.splice(this.breweryIndex,1)
+                this.editMode=false
+                this.curEditItem=null
+              }
+
           }
-          this.editMode=false
-          this.curEditItem=null
           console.log("mainObj arr is: ", this.mainObj)
           console.log("items arr is: ", this.items)
     },
